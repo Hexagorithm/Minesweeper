@@ -28,7 +28,8 @@ class Tile(pg.sprite.Sprite):
         self.image = pg.image.load(image_path).convert_alpha()
         self.image = pg.transform.scale(self.image, size = (self.multiplier, self.multiplier))
         self.rect = self.image.get_rect()
-        self.rect.topleft = (self.x * self.multiplier, self.y * self.multiplier)
+        self.rect.topleft = (self.x * self.multiplier, self.y * self.multiplier + st.menu_bar_size)
+        print('Tile was created wit topleft: {}'.format((self.x * self.multiplier, self.y * self.multiplier + st.menu_bar_size)))
 
     def create_identity(self):
         pg.font.init()
@@ -72,3 +73,4 @@ class Tile(pg.sprite.Sprite):
             self.surface.blit(self.flag_image, self.rect)
         if self.is_opened:
             self.surface.blit(self.identity_image, self.rect)
+

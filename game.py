@@ -154,7 +154,7 @@ class Playing(Screen):
                     if [tile.y, tile.x] in x_and_y:
                         self.try_open(tile)
 
-            print('{} was opened'.format(repr(tile)))
+            # print('{} was opened'.format(repr(tile)))
 
     def render_map(self):
         surface = self.screen
@@ -162,7 +162,7 @@ class Playing(Screen):
         for y, row in enumerate(self.map):
             for x , item in enumerate(row):
                 tile = Tile(st.tile_multiplier,surface,x,y,*item)
-                print(repr(tile))
+                # print(repr(tile))
                 self.tiles.add(tile)
 
     def display(self):
@@ -170,3 +170,5 @@ class Playing(Screen):
         for tile in self.tiles:
             tile.draw()
         pg.display.update()
+
+    def

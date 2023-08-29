@@ -1,6 +1,7 @@
-screen_size = 500, 500
-bomb_amount = 40
-tile_amount = 15
+screen_size = 500, 550
+menu_bar_size = 50
+bomb_amount = 1
+tile_amount = 5
 flag_path = 'textures\\tiles\\flag.png'
 opened_tile_dark = 'textures\\tiles\\opened_tile1.png'
 opened_tile_light = 'textures\\tiles\\opened_tile2.png'
@@ -17,4 +18,4 @@ font_color = {'B': (0,0,0),
               '6': (5, 0, 175),
               '7': (89, 255, 99),
               '8': (255, 255, 255)}
-tile_multiplier = screen_size[0] // tile_amount
+tile_multiplier = (screen_size[0]) // tile_amount
