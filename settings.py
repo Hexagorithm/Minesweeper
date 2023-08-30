@@ -1,7 +1,7 @@
 screen_size = 800, 850
 
-bomb_amount = 99
-tile_amount = 25
+bomb_amount = 10#99
+tile_amount = 10#25
 play_again_button_path = 'textures\\button\\play_again_button.png'
 bomb_path = 'textures\\bomb\\bomb.png'
 flag_path = 'textures\\flag\\flag.png'
@@ -10,6 +10,12 @@ opened_tile_dark = 'textures\\tiles\\opened_tile1.png'
 opened_tile_light = 'textures\\tiles\\opened_tile2.png'
 unopened_tile_dark = 'textures\\tiles\\unopened_tile1.png'
 unopened_tile_light = 'textures\\tiles\\unopened_tile2.png'
+lmao1_path = 'textures\\loss\\Lmao1.png'
+lmao2_path = 'textures\\loss\\lmao2.png'
+lmao3_path = 'textures\\loss\\lmao3.png'
+gj1_path = 'textures\\win\\good_job1.png'
+gj2_path = 'textures\\win\\good_job2.png'
+gj3_path = 'textures\\win\\good_job3.png'
 font_name = None
 font_color = {'B':    (0,0,0),
               '1':    (25,118,210),

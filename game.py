@@ -270,6 +270,25 @@ class EndingWin(Screen):
     def create_win_screen(self):
         font = pg.font.Font(st.font_name, self.screen_size[0])
         self.text_image = font.render(self.message, True, st.font_color['ending'])
+
+        self.gj1_image = pg.image.load(st.gj1_path)
+        self.gj1_image = pg.transform.scale(self.gj1_image, (
+        self.gj1_image.get_size()[0] // 2, self.gj1_image.get_size()[1] // 2))
+        self.gj1_rect = self.gj1_image.get_rect()
+        self.gj1_rect.center = (647, 225)
+
+        self.gj2_image = pg.image.load(st.gj2_path)
+        self.gj2_image = pg.transform.scale(self.gj2_image, (
+        self.gj2_image.get_size()[0] // 2, self.gj2_image.get_size()[1] // 2))
+        self.gj2_rect = self.gj2_image.get_rect()
+        self.gj2_rect.center = (83, 192)
+
+        self.gj3_image = pg.image.load(st.gj3_path)
+        self.gj3_image = pg.transform.scale(self.gj3_image, (
+        self.gj3_image.get_size()[0] // 2, self.gj3_image.get_size()[1] // 2))
+        self.gj3_rect = self.gj3_image.get_rect()
+        self.gj3_rect.center = (636, 714)
+
         self.text_image = pg.transform.scale(self.text_image, size= (st.screen_size[0], 100))
         self.play_button = PlayAgainButton(st.screen_size[0] // 2,
                                            st.screen_size[1] // 2,
@@ -280,6 +299,11 @@ class EndingWin(Screen):
     def display(self):
         self.screen.fill('green')
         self.screen.blit(self.text_image,(0,0))
+
+        self.screen.blit(self.gj1_image, self.gj1_rect)
+        self.screen.blit(self.gj2_image, self.gj2_rect)
+        self.screen.blit(self.gj3_image, self.gj3_rect)
+
         self.play_button.draw()
         pg.display.update()
 
@@ -308,12 +332,30 @@ class EndingLoss(Screen):
             if event.type == pg.MOUSEBUTTONDOWN:
                 if self.play_button.rect.collidepoint(pg.mouse.get_pos()):
                     self.try_again = True
+                else:
+                    print(pg.mouse.get_pos())
 
     def create_loss_screen(self):
         pg.font.init()
         font = pg.font.Font(st.font_name, self.screen_size[0])
         self.text_image = font.render(self.message, True, st.font_color['ending'])
         self.text_image = pg.transform.scale(self.text_image, size= (st.screen_size[0], 100))
+
+        self.lmao1_image = pg.image.load(st.lmao1_path)
+        self.lmao1_image = pg.transform.scale(self.lmao1_image,(self.lmao1_image.get_size()[0] // 2, self.lmao1_image.get_size()[1] // 2))
+        self.lmao1_rect = self.lmao1_image.get_rect()
+        self.lmao1_rect.center = (647, 225)
+
+        self.lmao2_image = pg.image.load(st.lmao2_path)
+        self.lmao2_image = pg.transform.scale(self.lmao2_image,(self.lmao2_image.get_size()[0] // 2, self.lmao2_image.get_size()[1] // 2))
+        self.lmao2_rect = self.lmao2_image.get_rect()
+        self.lmao2_rect.center = (83, 192)
+
+        self.lmao3_image = pg.image.load(st.lmao3_path)
+        self.lmao3_image = pg.transform.scale(self.lmao3_image, (self.lmao3_image.get_size()[0] // 2, self.lmao3_image.get_size()[1] // 2))
+        self.lmao3_rect = self.lmao3_image.get_rect()
+        self.lmao3_rect.center = (636, 714)
+
         self.play_button = PlayAgainButton(st.screen_size[0] // 2,
                                            st.screen_size[1] //2,
                                            64,
@@ -323,6 +365,9 @@ class EndingLoss(Screen):
     def display(self):
         self.screen.fill('red')
         self.screen.blit(self.text_image, (0, 0))
+        self.screen.blit(self.lmao1_image, self.lmao1_rect)
+        self.screen.blit(self.lmao2_image, self.lmao2_rect)
+        self.screen.blit(self.lmao3_image, self.lmao3_rect)
         self.play_button.draw()
         pg.display.update()
 
