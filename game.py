@@ -202,9 +202,17 @@ class Playing(Screen):
     def pause_game(self):
         self.running = False
 
+    def display_flag_amount(self):
+        pg.font.init()
+        font = pg.font.Font(st.font_name,st.tile_multiplier)
+        flag_amount_image = font.render('Flags left: {}'.format(self.flags),True,st.font_color['flags'])
+        flag_amount_pos = (0,0)
+        self.screen.blit(flag_amount_image, flag_amount_pos)
+
     def display(self):
         self.screen.fill('black')
         self.display_tiles()
+        self.display_flag_amount()
         # self.display_pause()
         pg.display.update()
 

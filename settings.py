@@ -1,7 +1,7 @@
 screen_size = 500, 550
 
-bomb_amount = 10
-tile_amount = 10
+bomb_amount = 10 #99
+tile_amount = 10 #24
 bomb_path = 'textures\\bomb\\bomb.png'
 flag_path = 'textures\\flag\\flag.png'
 pause_path = 'textures\\pause\\pause.png'
@@ -19,6 +19,7 @@ font_color = {'B':    (0,0,0),
               '6':    (5, 0, 175),
               '7':    (89, 255, 99),
               '8':    (255, 255, 255),
-              'ending': (0,0,0)}
+              'ending': (0,0,0),
+              'flags': (255,255,255)}
 tile_multiplier = (screen_size[0]) // tile_amount
 menu_bar_size = tile_multiplier
