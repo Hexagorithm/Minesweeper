@@ -1,7 +1,7 @@
 screen_size = 800, 850
 
-bomb_amount = 10#99
-tile_amount = 10#25
+bomb_amount = 99
+tile_amount = 25
 play_again_button_path = 'textures\\button\\play_again_button.png'
 bomb_path = 'textures\\bomb\\bomb.png'
 flag_path = 'textures\\flag\\flag.png'
