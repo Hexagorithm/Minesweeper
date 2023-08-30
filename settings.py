@@ -1,7 +1,7 @@
 screen_size = 500, 550
 
-bomb_amount = 10 #99
-tile_amount = 10 #24
+bomb_amount = 99
+tile_amount = 25
 bomb_path = 'textures\\bomb\\bomb.png'
 flag_path = 'textures\\flag\\flag.png'
 pause_path = 'textures\\pause\\pause.png'
