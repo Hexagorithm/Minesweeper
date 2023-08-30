@@ -2,7 +2,14 @@ import pygame as pg
 import settings as st
 
 class Tile(pg.sprite.Sprite):
-    def __init__(self, tile_size_multiplier, surface, x, y, identity, if_opened, if_flagged):
+    def __init__(self,
+                 tile_size_multiplier,
+                 surface,
+                 x,
+                 y,
+                 identity,
+                 if_opened,
+                 if_flagged):
         super().__init__()
         self.multiplier = tile_size_multiplier
         self.surface = surface
@@ -20,6 +27,18 @@ class Tile(pg.sprite.Sprite):
         self.create_tile()
         self.create_flag()
 
+    def get_position(self):
+        return (self.x, self.y)
+
+    def get_identity(self):
+        return self.identity
+
+    def get_opened(self):
+        return self.is_opened
+
+    def get_flagged(self):
+        return self.is_flagged
+
     def create_tile(self):
         if (self.x + self.y) % 2 == 1:
             image_path = self.unopened_tile_light
@@ -29,17 +48,41 @@ class Tile(pg.sprite.Sprite):
         self.image = pg.transform.scale(self.image, size = (self.multiplier, self.multiplier))
         self.rect = self.image.get_rect()
         self.rect.topleft = (self.x * self.multiplier, self.y * self.multiplier + st.menu_bar_size)
-        print('Tile was created wit topleft: {}'.format((self.x * self.multiplier, self.y * self.multiplier + st.menu_bar_size)))
+        print('Tile was created with topleft: {}'.format((self.x * self.multiplier, self.y * self.multiplier + st.menu_bar_size)))
 
     def create_identity(self):
-        pg.font.init()
-        font = pg.font.Font(st.font_name, self.multiplier)
-        self.identity_image = font.render(self.identity, True, st.font_color[self.identity])
-        self.identity_image = pg.transform.scale(self.identity_image, size=(self.multiplier, self.multiplier))
+        if self.identity == '0' :
+            pass
+        elif self.identity == 'B':
+            self.identity_image = pg.image.load(st.bomb_path).convert_alpha()
+            self.identity_image = pg.transform.scale(self.identity_image, size=(self.multiplier, self.multiplier))
+        else:
+            pg.font.init()
+            font = pg.font.Font(st.font_name, self.multiplier)
+            self.identity_image = font.render(self.identity, True, st.font_color[self.identity])
+            self.identity_image = pg.transform.scale(self.identity_image, size=(self.multiplier,self.multiplier))
 
     def create_flag(self):
         self.flag_image = pg.image.load(self.flag_path)
         self.flag_image = pg.transform.scale(self.flag_image, size=(self.multiplier, self.multiplier))
+
+    def if_can_open(self):
+        if self.is_opened == False and self.is_flagged == False:
+            return True
+        else:
+            return False
+
+    def if_can_flag(self):
+        if self.is_opened == False and self.is_flagged == False:
+            return True
+        else:
+            return False
+
+    def if_can_unflag(self):
+        if self.is_opened == False and self.is_flagged == True:
+            return True
+        else:
+            return False
 
     def open(self):
         if not self.is_flagged:
@@ -71,6 +114,24 @@ class Tile(pg.sprite.Sprite):
         self.surface.blit(self.image, self.rect)
         if self.is_flagged:
             self.surface.blit(self.flag_image, self.rect)
-        if self.is_opened:
+        if self.is_opened and self.identity != '0' :
             self.surface.blit(self.identity_image, self.rect)
 
+class Pause_button(pg.sprite.Sprite):
+
+    def __init__(self, tile_size_multiplier, surface,x,y):
+        super().__init__()
+        self.multiplier = tile_size_multiplier
+        self.surface = surface
+        self.x = x
+        self.y = y
+        self.create_pause()
+
+    def create_pause(self):
+        self.image = pg.image.load(st.pause_path)
+        self.image = pg.transform.scale(self.image, size= (self.multiplier, self.multiplier) )
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (self.x * self.multiplier, self.y * self.multiplier)
+
+    def draw(self):
+        self.surface.blit(self.image,self.rect)
