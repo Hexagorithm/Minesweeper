@@ -117,21 +117,32 @@ class Tile(pg.sprite.Sprite):
         if self.is_opened and self.identity != '0' :
             self.surface.blit(self.identity_image, self.rect)
 
-class Pause_button(pg.sprite.Sprite):
+class PlayAgainButton(pg.sprite.Sprite):
 
-    def __init__(self, tile_size_multiplier, surface,x,y):
+    def __init__(self,x,y,font_size,surface, message):
         super().__init__()
-        self.multiplier = tile_size_multiplier
-        self.surface = surface
         self.x = x
         self.y = y
-        self.create_pause()
+        self.font_size = font_size
+        self.surface = surface
+        self.message = message
 
-    def create_pause(self):
-        self.image = pg.image.load(st.pause_path)
-        self.image = pg.transform.scale(self.image, size= (self.multiplier, self.multiplier) )
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (self.x * self.multiplier, self.y * self.multiplier)
+        self.button_image_path = st.play_again_button_path
+        self.size = (200, 50)
+        self.font = pg.font.Font(st.font_name, self.font_size)
+        self.create_button()
+
+    def create_button(self):
+        self.button_image = pg.image.load(self.button_image_path)
+        self.button_image = pg.transform.scale(self.button_image,self.size)
+        self.rect = self.button_image.get_rect()
+        self.rect.center = (self.x, self.y)
+
+        self.text_image = self.font.render(self.message,True,st.font_color['message'])
+        self.text_image = pg.transform.scale(self.text_image, self.size)
 
     def draw(self):
-        self.surface.blit(self.image,self.rect)
+        self.surface.blit(self.button_image,self.rect)
+        self.surface.blit(self.text_image,self.rect)
+
+

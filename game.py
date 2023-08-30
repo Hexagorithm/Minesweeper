@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 import settings as st
 import pygame as pg
-from tile import Tile, Pause_button
+from tile import Tile, PlayAgainButton
 from random import randint
+from time import sleep
 
 class Screen(ABC):
     @abstractmethod
@@ -72,8 +73,13 @@ class Game:
                 elif status == 'EndingWin':
                     curr_mode.running = False
                     self.state = 'endingwin'
+                elif status == 'Playing':
+                    curr_mode.running = False
+                    self.state = 'playing'
 
         self.end()
+
+
 
 class Playing(Screen):
 
@@ -87,17 +93,24 @@ class Playing(Screen):
         self.screen = pg.display.set_mode(self.screen_size)
         self.map = self.create_map()
         self.render_tiles()
-        # self.render_pause()
+        self.force_loss = False
+        self.force_win = False
 
     def create_map(self):
+        # it should do something sbout an input where there are less avaliable tiles than bombs
         map = []
         for _ in range(self.tile_amount):
             map.append([['_', False, False] for _ in range(self.tile_amount)])
         for _ in range(self.bomb_amount):
-            x = randint(0, self.tile_amount - 1)
-            y = randint(0, self.tile_amount - 1)
-            if map[y][x][0] == '_':
-                map[y][x][0] = 'B'
+            bomb_added = False
+            while not bomb_added:
+                x = randint(0, self.tile_amount - 1)
+                y = randint(0, self.tile_amount - 1)
+                if map[y][x][0] == '_':
+                    map[y][x][0] = 'B'
+                    bomb_added = True
+                else:
+                    continue
         for y, row in enumerate(map):
             for x, item in enumerate(row):
                 if item[0] == '_':
@@ -133,15 +146,23 @@ class Playing(Screen):
             if event.type == pg.MOUSEBUTTONDOWN:
 
                 target_tile = self.get_tile_clicked()
-                if pg.mouse.get_pressed()[0]:
-                    self.try_open(target_tile)
-                elif pg.mouse.get_pressed()[2]:
-                    self.try_flag(target_tile)
+                if target_tile != None:
+                    if pg.mouse.get_pressed()[0]:
+                        self.try_open(target_tile)
+                    elif pg.mouse.get_pressed()[2]:
+                        self.try_flag(target_tile)
+            # if event.type == pg.KEYDOWN:
+            #     keys = pg.key.get_pressed()
+            #     if keys[pg.K_l]:
+            #         self.force_loss = True
+            #     elif keys[pg.K_w]:
+            #         self.force_win = True
 
     def get_tile_clicked(self):
         for tile in self.tiles:
             if tile.rect.collidepoint( pg.mouse.get_pos() ):
                 return tile
+        return None
 
     def try_nuke(self,tile):
         if tile.get_identity() == '0':
@@ -196,15 +217,6 @@ class Playing(Screen):
         for tile in self.tiles:
             tile.draw()
 
-    def render_pause(self):
-        self.pause = Pause_button(st.tile_multiplier, self.screen, 0, 0)
-
-    def display_pause(self):
-        self.pause.draw()
-
-    def pause_game(self):
-        self.running = False
-
     def display_flag_amount(self):
         pg.font.init()
         font = pg.font.Font(st.font_name,st.tile_multiplier)
@@ -216,18 +228,24 @@ class Playing(Screen):
         self.screen.fill('black')
         self.display_tiles()
         self.display_flag_amount()
-        # self.display_pause()
         pg.display.update()
 
     def status(self):
+        if self.force_loss:
+            return 'EndingLoss'
+        elif self.force_win:
+            return 'EndingWin'
         tiles_bomb = [tile for tile in self.tiles if tile.get_identity() == 'B']
         for tile_bomb in tiles_bomb:
             if tile_bomb.get_opened():
+                sleep(1)
                 return 'EndingLoss'
         for tile_bomb in tiles_bomb:
             if not tile_bomb.get_flagged():
                 return None
+        sleep(1)
         return 'EndingWin'
+
 
 
 class EndingWin(Screen):
@@ -237,6 +255,7 @@ class EndingWin(Screen):
 
         self.running = True
         self.message = 'YOU WIN'
+        self.go_again = False
         self.screen = pg.display.set_mode( size = self.screen_size)
         self.create_win_screen()
 
@@ -244,19 +263,31 @@ class EndingWin(Screen):
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.running = 'quit'
+            elif event.type == pg.MOUSEBUTTONDOWN:
+                if self.play_button.rect.collidepoint(pg.mouse.get_pos()):
+                    self.go_again = True
 
     def create_win_screen(self):
         font = pg.font.Font(st.font_name, self.screen_size[0])
         self.text_image = font.render(self.message, True, st.font_color['ending'])
-        self.text_image = pg.transform.scale(self.text_image, size= self.screen_size)
+        self.text_image = pg.transform.scale(self.text_image, size= (st.screen_size[0], 100))
+        self.play_button = PlayAgainButton(st.screen_size[0] // 2,
+                                           st.screen_size[1] // 2,
+                                           64,
+                                           self.screen,
+                                           'Click to go again')
 
     def display(self):
         self.screen.fill('green')
         self.screen.blit(self.text_image,(0,0))
+        self.play_button.draw()
         pg.display.update()
 
     def status(self):
+        if self.go_again:
+            return 'Playing'
         return None
+
 
 
 class EndingLoss(Screen):
@@ -266,6 +297,7 @@ class EndingLoss(Screen):
 
         self.running = True
         self.message = 'YOU LOST'
+        self.try_again = False
         self.screen = pg.display.set_mode(size=self.screen_size)
         self.create_loss_screen()
 
@@ -273,37 +305,28 @@ class EndingLoss(Screen):
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.running = 'quit'
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if self.play_button.rect.collidepoint(pg.mouse.get_pos()):
+                    self.try_again = True
 
     def create_loss_screen(self):
         pg.font.init()
         font = pg.font.Font(st.font_name, self.screen_size[0])
         self.text_image = font.render(self.message, True, st.font_color['ending'])
-        self.text_image = pg.transform.scale(self.text_image, size=self.screen_size)
+        self.text_image = pg.transform.scale(self.text_image, size= (st.screen_size[0], 100))
+        self.play_button = PlayAgainButton(st.screen_size[0] // 2,
+                                           st.screen_size[1] //2,
+                                           64,
+                                           self.screen,
+                                           'Click to try again')
 
     def display(self):
         self.screen.fill('red')
         self.screen.blit(self.text_image, (0, 0))
+        self.play_button.draw()
         pg.display.update()
 
     def status(self):
+        if self.try_again:
+            return 'Playing'
         return None
-
-class Pause(Screen):
-
-    def __init__(self, screen_size):
-        self.screen_size = screen_size
-
-        self.screen = pg.display.set_mode(self.screen_size)
-        self.running = True
-
-    def events(self):
-        for event in pg.event.get():
-
-            if event.type == pg.QUIT:
-                self.running = 'quit'
-
-            if event.type == pg.MOUSEBUTTONDOWN:
-                pass
-
-    def display(self):
-        self.screen.fill('black')
