@@ -34,7 +34,7 @@ class Game:
         self.running = True
         self.state = 'playing'
         self.clock = pg.time.Clock
-        icon = pg.image.load('textures\\bomb\\bomb.png')
+        icon = pg.image.load(st.icon)
         pg.display.set_caption('Saper')
         pg.display.set_icon(icon)
 
